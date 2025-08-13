@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 100
+#define STRING_SIZE 50
+
+char stack[MAX][STRING_SIZE];
+int top = -1;
+
+// Push operation
+void push(char str[]) {
+    if (top == MAX - 1) {
+        printf("Stack Overflow! Cannot add more actions.\n");
+        return;
+    }
+    top++;
+    strcpy(stack[top], str);
+    printf("Action '%s' added.\n", str);
+}
+
+// Pop operation (Undo)
+void pop() {
+    if (top == -1) {
+        printf("No actions to undo.\n");
+        return;
+    }
+    printf("Undo action: '%s'\n", stack[top]);
+    top--;
+}
+
+// Display all actions
+void display() {
+    if (top == -1) {
+        printf("No actions performed yet.\n");
+        return;
+    }
+    printf("Action history (most recent on top):\n");
+    for (int i = top; i >= 0; i--) {
+        printf("%s\n", stack[i]);
+    }
+}
+
+int main() {
+    int choice;
+    char action[STRING_SIZE];
+
+    while (1) {
+        printf("\nStack Application - Undo Example\n");
+        printf("1. Perform Action (PUSH)\n");
+        printf("2. Undo Last Action (POP)\n");
+        printf("3. Display Action History\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar(); // To consume newline character after scanf
+
+        switch (choice) {
+            case 1:
+                printf("Enter action description: ");
+                fgets(action, STRING_SIZE, stdin);
+                action[strcspn(action, "\n")] = '\0'; // Remove newline
+                push(action);
+                break;
+            case 2:
+                pop();
+                break;
+            case 3:
+                display();
+                break;
+            case 4:
+                exit(0);
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+
+    return 0;
+}
