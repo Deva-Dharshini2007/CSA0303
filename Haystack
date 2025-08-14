@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to find the index of needle in haystack, or -1 if not found
+int findSubstring(char *haystack, char *needle) {
+    int hLen = strlen(haystack);
+    int nLen = strlen(needle);
+
+    if (nLen == 0) return 0;  // Empty needle matches at start
+
+    for (int i = 0; i <= hLen - nLen; i++) {
+        int j;
+        for (j = 0; j < nLen; j++) {
+            if (haystack[i + j] != needle[j])
+                break;
+        }
+        if (j == nLen)
+            return i;  // Found at position i
+    }
+    return -1;  // Not found
+}
+
+int main() {
+    char haystack[100], needle[100];
+
+    printf("Enter the haystack string: ");
+    fgets(haystack, sizeof(haystack), stdin);
+    haystack[strcspn(haystack, "\n")] = '\0';  // Remove newline
+
+    printf("Enter the needle string: ");
+    fgets(needle, sizeof(needle), stdin);
+    needle[strcspn(needle, "\n")] = '\0';  // Remove newline
+
+    int index = findSubstring(haystack, needle);
+
+    if (index != -1) {
+        printf("Needle found at index %d\n", index);
+    } else {
+        printf("Needle not found in haystack.\n");
+    }
+
+    return 0;
+}
