@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create a new node
+struct Node* newNode(int data) {
+    struct Node* temp = (struct Node*) malloc(sizeof(struct Node));
+    temp->data = data;
+    temp->next = NULL;
+    return temp;
+}
+
+// Get length of a linked list
+int getLength(struct Node* head) {
+    int len = 0;
+    while (head) {
+        len++;
+        head = head->next;
+    }
+    return len;
+}
+
+// Find intersection node (returns pointer or NULL)
+struct Node* getIntersectionNode(struct Node* head1, struct Node* head2) {
+    int len1 = getLength(head1);
+    int len2 = getLength(head2);
+
+    // Advance the longer list by the difference in length
+    while (len1 > len2) {
+        head1 = head1->next;
+        len1--;
+    }
+    while (len2 > len1) {
+        head2 = head2->next;
+        len2--;
+    }
+
+    // Move both pointers until they meet or reach end
+    while (head1 && head2) {
+        if (head1 == head2)  // Compare pointers, not values
+            return head1;
+        head1 = head1->next;
+        head2 = head2->next;
+    }
+    return NULL;  // No intersection
+}
+
+int main() {
+    // Create first list: 1 -> 2 -> 3 -> 4 -> 5
+    struct Node* head1 = newNode(1);
+    head1->next = newNode(2);
+    head1->next->next = newNode(3);
+    head1->next->next->next = newNode(4);
+    head1->next->next->next->next = newNode(5);
+
+    // Create second list: 9 -> 4 -> 5 (intersecting at node with value 4)
+    struct Node* head2 = newNode(9);
+    head2->next = head1->next->next->next;  // Pointing to node with value 4
+
+    struct Node* intersection = getIntersectionNode(head1, head2);
+    if (intersection)
+        printf("Intersection at node with data = %d\n", intersection->data);
+    else
+        printf("No intersection found.\n");
+
+    return 0;
+}
