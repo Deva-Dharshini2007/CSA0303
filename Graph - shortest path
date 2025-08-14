@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <limits.h>
+#include <stdbool.h>
+
+#define V 5  // Number of vertices
+
+// Find vertex with minimum distance value, from set of vertices not yet processed
+int minDistance(int dist[], bool sptSet[]) {
+    int min = INT_MAX, min_index = -1;
+
+    for (int v = 0; v < V; v++)
+        if (!sptSet[v] && dist[v] <= min) {
+            min = dist[v];
+            min_index = v;
+        }
+
+    return min_index;
+}
+
+// Print the constructed distance array
+void printSolution(int dist[]) {
+    printf("Vertex \t Distance from Source\n");
+    for (int i = 0; i < V; i++)
+        printf("%d \t\t %d\n", i, dist[i]);
+}
+
+// Dijkstra's algorithm for shortest path from src to all vertices
+void dijkstra(int graph[V][V], int src) {
+    int dist[V];   // The output array. dist[i] will hold shortest distance from src to i
+    bool sptSet[V]; // sptSet[i] true if vertex i included in shortest path tree
+
+    // Initialize distances and sptSet
+    for (int i = 0; i < V; i++) {
+        dist[i] = INT_MAX;
+        sptSet[i] = false;
+    }
+
+    dist[src] = 0; // Distance to source is 0
+
+    for (int count = 0; count < V - 1; count++) {
+        int u = minDistance(dist, sptSet);
+        sptSet[u] = true;
+
+        for (int v = 0; v < V; v++) {
+            // Update dist[v] if not in sptSet, there is an edge u-v, and total weight is smaller
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX &&
+                dist[u] + graph[u][v] < dist[v]) {
+                dist[v] = dist[u] + graph[u][v];
+            }
+        }
+    }
+
+    printSolution(dist);
+}
+
+int main() {
+    int graph[V][V] = {
+        {0, 10, 0, 30, 100},
+        {10, 0, 50, 0, 0},
+        {0, 50, 0, 20, 10},
+        {30, 0, 20, 0, 60},
+        {100, 0, 10, 60, 0},
+    };
+
+    int source = 0;
+    printf("Dijkstra's shortest paths from vertex %d:\n", source);
+    dijkstra(graph, source);
+
+    return 0;
+}
